@@ -20,3 +20,8 @@ The etical risks of this project are tremendous.
 No action is taken to mitigate or prevent ill use of the system. 
 
 Plz don't abuse it. 
+
+
+## Notes to self
+
+- Try transformers
