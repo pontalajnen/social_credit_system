@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+
+
 body {
     margin: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Lexend', sans-serif;
 }
 .container {
     display: flex;

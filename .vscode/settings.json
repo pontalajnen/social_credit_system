@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
-        "aslödikjfaösl"
+        "aslödikjfaösl",
+        "Främling"
     ],
     "flake8.args": [
         "--max-line-length=120",
