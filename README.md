@@ -25,3 +25,17 @@ Plz don't abuse it.
 ## Notes to self
 
 - Try transformers
+
+## Helpfull Commands
+
+### Installing fswebcam
+
+```bash
+sudo apt install fswebcam
+```
+
+### Using fswebcam
+
+```bash
+fswebcam -r <640x480> --no-banner image.jpg
+```
