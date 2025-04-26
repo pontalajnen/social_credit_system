@@ -1,7 +1,10 @@
 {
     "cSpell.words": [
         "aslödikjfaösl",
-        "Främling"
+        "Främling",
+        "fswebcam",
+        "imencode",
+        "tobytes"
     ],
     "flake8.args": [
         "--max-line-length=120",

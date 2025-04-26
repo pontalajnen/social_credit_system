@@ -1,11 +1,21 @@
-from flask import Flask, render_template, request
-from flask_cors import CORS
+from flask import Flask, render_template, request  # type: ignore
+from flask_cors import CORS  # type: ignore
 import threading
+import queue
+import io
+# import time
+import os
 
 
+# Create the app instance
 app = Flask(__name__, static_folder="website", template_folder="website")
-
 CORS(app)
+
+# Queue between threads
+image_queue = queue.Queue()
+
+COLLECT_TRAINING_DATA = True
+FILE_COUNTER = len(os.listdir("./uploads"))
 
 
 @app.route("/")
@@ -18,8 +28,9 @@ def check_person():
     return {"status": "success", "message": "Person checked successfully"}
 
 
-@app.route("/upload", methods=["GET"])
+@app.route("/upload", methods=["POST"])
 def upload_file():
+    print("here")
     if "file" not in request.files:
         return "No file part", 400
 
@@ -28,7 +39,11 @@ def upload_file():
     if file.filename == "":
         return "No selected file", 400
 
-    file.save(f"./uploads/{file.filename}")
+    if COLLECT_TRAINING_DATA:
+        file.save(f"./uploads/{file.filename[0:-4]}-{FILE_COUNTER}.jpg")
+        FILE_COUNTER += 1  # noqa
+
+    image_queue.put(io.BytesIO(file.read()))
 
     return "File uploaded successfully", 200
 
@@ -39,6 +54,14 @@ def run_server():
 
 def main():
     print("Webserver started!")
+
+    while True:
+        file = image_queue.get()
+        print("Image received")
+
+        file.seek(0)
+
+        file.close()
 
 
 if __name__ == "__main__":

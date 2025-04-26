@@ -4,29 +4,27 @@ Author: Pontus Hedman
 
 ## Early development
 
-Currently, not working at all. I will update and remove this when the system is in its first working state. 
-
+Currently, not working at all. I will update and remove this when the system is in its first working state.
 
 ## Purpose
 
 This is a hobby project designed to use image and sound to detect and monitor people in your home.
 
-I use it as an excuse to spy on my roommate. 
+I use it as an excuse to spy on my roommate.
 
-## Ethical Riskts
+## Ethical Risks
 
-The etical risks of this project are tremendous. 
+The ethical risks of this project are tremendous.
 
-No action is taken to mitigate or prevent ill use of the system. 
+No action is taken to mitigate or prevent ill use of the system.
 
-Plz don't abuse it. 
-
+Plz don't abuse it.
 
 ## Notes to self
 
 - Try transformers
 
-## Helpfull Commands
+## Helpful Commands
 
 ### Installing fswebcam
 
