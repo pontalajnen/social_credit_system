@@ -2,9 +2,11 @@ import cv2
 import time
 import requests
 
+HOST_IP = "192.168.1.199"
+
 
 def main():
-    url = "http://localhost:5000/upload"
+    url = f"http://{HOST_IP}:5000/upload"
     camera = cv2.VideoCapture(0)
 
     while True:
