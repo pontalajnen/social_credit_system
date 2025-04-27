@@ -4,6 +4,7 @@
         "Främling",
         "fswebcam",
         "imencode",
+        "pyaudio",
         "tobytes"
     ],
     "flake8.args": [

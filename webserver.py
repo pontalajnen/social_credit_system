@@ -15,17 +15,11 @@ CORS(app)
 image_queue = queue.Queue()
 
 COLLECT_TRAINING_DATA = True
-FILE_COUNTER = len(os.listdir("./uploads"))
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
-
-
-@app.route("/api/check_person", methods=["POST"])
-def check_person():
-    return {"status": "success", "message": "Person checked successfully"}
 
 
 @app.route("/upload", methods=["POST"])
@@ -40,8 +34,7 @@ def upload_file():
         return "No selected file", 400
 
     if COLLECT_TRAINING_DATA:
-        file.save(f"./uploads/{file.filename[0:-4]}-{FILE_COUNTER}.jpg")
-        FILE_COUNTER += 1  # noqa
+        file.save(f"./uploads/{file.filename[0:-4]}-{len(os.listdir("./uploads"))}.jpg")
 
     image_queue.put(io.BytesIO(file.read()))
 
