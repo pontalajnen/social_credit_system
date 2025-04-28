@@ -3,9 +3,11 @@
         "aslödikjfaösl",
         "Främling",
         "fswebcam",
+        "genfromtxt",
         "imencode",
         "pyaudio",
-        "tobytes"
+        "tobytes",
+        "usecols"
     ],
     "flake8.args": [
         "--max-line-length=120",

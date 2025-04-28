@@ -3,7 +3,7 @@ import time
 import tqdm
 import torch.nn.functional as F
 import argparse
-
+from models.kitchen_model import CookingNet
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from torchvision.io import read_image
@@ -11,19 +11,56 @@ from torchvision.transforms import Resize
 from torchvision.transforms import Compose, ToTensor, Lambda, Pad
 from PIL import Image
 nn = torch.nn
+import numpy as np
+import os
+import pandas as pd
 
-from models.kitchen_model import CookingNet
+
+def load_csv_data(data_path, sub_sample=False):
+    y_train = np.genfromtxt(
+        os.path.join(data_path, "y_train.csv"),
+        delimiter=",",
+        skip_header=1,
+        dtype=int,
+        usecols=1,
+    )
+    x_train = np.genfromtxt(
+        os.path.join(data_path, "x_train.csv"), delimiter=",", skip_header=1
+    )
+    x_test = np.genfromtxt(
+        os.path.join(data_path, "x_test.csv"), delimiter=",", skip_header=1
+    )
+
+    train_ids = x_train[:, 0].astype(dtype=int)
+    test_ids = x_test[:, 0].astype(dtype=int)
+    x_train = x_train[:, 1:]
+    x_test = x_test[:, 1:]
+
+    # sub-sample
+    if sub_sample:
+        y_train = y_train[::50]
+        x_train = x_train[::50]
+        train_ids = train_ids[::50]
+
+    return x_train, x_test, y_train, train_ids, test_ids
 
 
 class CookingDataset(torch.utils.data.Dataset):
     def __init__(self, train=True):
         self.file_names = []
         split = 'train' if train else 'test'
-        with open(f'GTAV/{split}.txt', 'r') as f:
-            entry = f.readline()
+
+        self.image_labels = pd.read_csv(f"uploads/{split}.csv")
+        id = self.image_labels.iloc[0][0]
+        label = self.image_labels.iloc[0][1]
+        print(id)
+        print(label)
+
+        with open(f'GTAV/{split}.txt', 'r') as file:
+            entry = file.readline()
             while entry:
                 self.file_names.append(entry.strip())
-                entry = f.readline()
+                entry = file.readline()
 
     def __len__(self):
         # returns the number of items in the dataset, nice and simple
@@ -32,7 +69,7 @@ class CookingDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         name = self.file_names[idx]
         # of the form (x, y) the values are scaled by 255 and returned as type float
-        sample = (read_image(f'./noiseimages/{name}')/255., read_image(f'./images/{name}')/255.)
+        sample = (read_image(f'uploads/{name}')/255., idx)
         return sample
 
     def get_plottable(self, idx):
@@ -93,7 +130,7 @@ class Trainer():
         progress_bar = tqdm(self.test_data)
         total_steps = 0
 
-        for e, (x, y) in enumerate(pbar, 1):
+        for e, (x, y) in enumerate(progress_bar, 1):
             x = x.to(self.device, dtype=torch.float)
             y = y.to(self.device, dtype=torch.float)
             pred = self.model(x)
@@ -111,9 +148,15 @@ class Trainer():
 
 def train(test):
 
+    model = torch.load('kitchen-model.pth') if test else CookingNet()
+
+    trainer = Trainer(model, batch_size=16, opt=torch.optim.Adam, lr=0.0001)
+
     if test:
-        model = torch.load('model.pth')
-    model = CookingNet()
+        trainer.test()
+    else:
+        trainer.train(epochs=10)
+        torch.save(trainer.model, 'model.pth')
 
 
 if __name__ == "__main__":
